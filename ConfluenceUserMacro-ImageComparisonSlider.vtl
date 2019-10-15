@@ -6,7 +6,7 @@
 ## Developed by: Aot-Dep-Padi <vincent.blain@ac-orleans-tours.fr>
 ## Version: 1.0.0
 ## Date created: 20/05/2019
-## Last modification: 22/05/2019
+## Last modification: 15/10/2019
 ## ---
 
 
@@ -120,10 +120,10 @@
 	#set ($isValidUrlAfterImage = "false")
 #end
 #if (!$paramwidth)
-  #set ($paramwidth="100%")
+	#set ($paramwidth="100%")
 #end
 #if (!$paramheight)
-  #set ($paramheight="100%")
+	#set ($paramheight="100%")
 #end
 
 ## TODO : Implement checked value for ${paramInitVisibleRatio}
@@ -180,11 +180,11 @@ AJS.toInit(function(){
 			evaluateInitVisibleRatio = "0.5";
 		}
 		settings.initVisibleRatio = evaluateInitVisibleRatio;
-		
+				
 		// Init plugin jquery-images-compare 
 		var slider = window.parent.AJS.${jQuery}('${hashtag}image-comparison-slider-${id}');
 		var imagesCompareElement = slider.imagesCompare(settings);
-        var imagesCompare = imagesCompareElement.data('imagesCompare');
+		var imagesCompare = imagesCompareElement.data('imagesCompare');
 		var contentSlider = window.parent.AJS.${jQuery}('${hashtag}content-image-comparison-slider-${id}');
 
 		// Handle behaviour
@@ -227,6 +227,69 @@ AJS.toInit(function(){
 		#if($paramImageAfterCustomCSS)
 			window.parent.AJS.${jQuery}('.images-compare-after', contentSlider).css({${paramImageAfterCustomCSS}});
 		#end
+		
+		/**
+		* Get the slider size by parsing param width and height
+		**/
+		var sliderSize = function() {
+			var sliderWidth = '${paramwidth}'.replace('px', '');
+			var sliderHeight = '${paramheight}'.replace('px', '');
+			if(sliderWidth.indexOf('%') !== -1) {
+				sliderWidth = ""+slider.width();
+			}
+			if(sliderHeight.indexOf('%') !== -1) {
+				sliderHeight = ""+slider.height();
+			}
+			return {'width':sliderWidth, 'height':sliderHeight};
+		}();
+		
+		/**
+		* Use to resize image with keeping aspect ratio
+		**/
+		function imageResizeKeepingAspectRatio(img, sliderSize) {
+			var maxWidth = sliderSize.width;
+			var maxHeight = sliderSize.height;
+			var ratio = 0;
+			var width = img.width();
+			var height = img.height();
+
+			// Check if the current width is larger than the max
+			if(width > maxWidth){
+				ratio = maxWidth / width;
+				img.css('width', maxWidth);
+				img.css('height', height * ratio);
+				height = height * ratio;
+				width = width * ratio;
+			}
+			// Check if current height is larger than max
+			if(height > maxHeight){
+				ratio = maxHeight / height;
+				img.css('height', maxHeight);
+				img.css('width', width * ratio);
+				width = width * ratio;
+				height = height * ratio;
+			}
+			return {'width':img.width(), 'height':img.height()};
+		}
+		
+		// Resize images in slider
+		var imageAfter = window.parent.AJS.${jQuery}('.images-compare-after img', contentSlider);
+		var imageBefore = window.parent.AJS.${jQuery}('.images-compare-before img', contentSlider);
+		imageResizeKeepingAspectRatio(imageAfter, sliderSize);
+		var newSize = imageResizeKeepingAspectRatio(imageBefore, sliderSize);
+		
+		// Resize frontElement (image-compare-before)
+		var divBefore = window.parent.AJS.${jQuery}('.images-compare-before', contentSlider);
+		divBefore.width(newSize.width);
+		divBefore.height(newSize.height);
+		divBefore.css('clip', 'rect(0, ' + newSize.width + 'px, ' + newSize.height + 'px, 0)');
+		
+		// Resize slider
+		slider.width(newSize.width);
+		slider.height(newSize.height);
+				
+		imagesCompare.setValue(evaluateInitVisibleRatio, true);
+		
 	});
 });
 </script>
@@ -237,17 +300,18 @@ AJS.toInit(function(){
 			#if ($paramLabelBefore)
 				<span class="images-compare-label">${paramLabelBefore}</span>
 			#end
-			<img width="${paramwidth}" height="${paramheight}" style="display:block;max-width:${paramwidth};max-height:${paramheight};width:auto;height:auto;" src='${baseUrl}${attachmentManager.getAttachmentDownloadPath($content, $AttachmentFieldImageBeforeValue)}' alt="Before image">
+			<img src='${baseUrl}${attachmentManager.getAttachmentDownloadPath($content, $AttachmentFieldImageBeforeValue)}' alt="Before image">
 		</div>
 		<div>
 			#if ($paramLabelAfter)
 				<span class="images-compare-label">${paramLabelAfter}</span>
 			#end
-			<img width="${paramwidth}" height="${paramheight}" style="display:block;max-width:${paramwidth};max-height:${paramheight};width:auto;height:auto;" src='${baseUrl}${attachmentManager.getAttachmentDownloadPath($content, $AttachmentFieldImageAfterValue)}' alt="After image">
+			<img src='${baseUrl}${attachmentManager.getAttachmentDownloadPath($content, $AttachmentFieldImageAfterValue)}' alt="After image">
 		</div>
 	</div>
+
 	#if($paramAddButtons == "true")
-	<div class="images-compare-buttons" style="display:block;max-width:${paramwidth};width:${paramwidth};text-align:${paramDispositionButtons};">
+	<div class="images-compare-buttons">
 		<button class="btn before-btn">Avant</button>
 		<button class="btn fifty-btn">50/50</button>
 		<button class="btn after-btn">Après</button>

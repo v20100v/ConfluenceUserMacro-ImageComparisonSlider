@@ -6,7 +6,19 @@
 
 This user macro give ability to view a comparison between two images and control it by moving a slider, in order to show differences.
 
-[![Watch the video](./docs/simple-use.png)](https://youtu.be/9-C7NL-dX2o)
+**Compare two image**
+
+You can use it, in order to compare the user interface of two versions of an application.
+
+![ConfluenceUserMacro ImagesCompare compare user interface of two versions of an application](./docs/ConfluenceUserMacrosImageCompare_CompareUserInterface.gif)
+
+**Compare gif animation**
+
+You can also make comparison beetwen two gif animation.
+
+![ConfluenceUserMacro ImagesCompare compare user interface of two versions of an application](./docs/ConfluenceUserMacrosImageCompare_CompareAnimation.gif)
+
+**Another Features**
 
 - Images use for comparaison provides from attachments of current page confluence;
 - Set height and widht with pixel or percent ;
@@ -75,19 +87,6 @@ Parameter | Description
 
 <br/>
 
-## Usages
-
-### Compare the user interface of two versions of an application. 
-
-![ConfluenceUserMacro ImagesCompare compare user interface of two versions of an application](./docs/ConfluenceUserMacrosImageCompare_CompareUserInterface.gif)
-
-### Compare gif animation
-
-![ConfluenceUserMacro ImagesCompare compare user interface of two versions of an application](./docs/ConfluenceUserMacrosImageCompare_CompareAnimation.gif)
-
-
-<br/>
-
 ## Credits
 
 ConfluenceUserMacro-ImageComparisonSlider depends on 
@@ -102,4 +101,6 @@ ConfluenceUserMacro-ImageComparisonSlider depends on
 
 ## Licence
 
-Copyright (c) 2019. Released under the MIT license.
+Copyright (c) 2019. 6i by 2o1oo <vb20100bv@gmail.com>
+
+Release under [MIT](./LICENSE.md) license.
